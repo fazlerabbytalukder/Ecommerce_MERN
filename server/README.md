@@ -45,3 +45,17 @@ now you can see the request type nad other info in the terminal
 10. for env istall: npm i dotenv
 11. for database connection: npm i mongoose
 12. for Password bcrypt: npm i bcrypt
+
+##### process to router set
+1. route define in app.js
+//route define
+app.use('/api/users',userRouter);
+
+2. in router folder method write
+//GET: api/users
+userRouter.get("/", getusers);
+
+3. then controllter-> userController handle functionatiality. Here sometimes needs models->userModel (mongoose).
+
+4. So the array is app.js->router(userRouter.js)->controller(userController.js)->model(userModel.js)
+
