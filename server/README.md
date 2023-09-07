@@ -54,6 +54,7 @@ app.use('/api/users',userRouter);
 2. in router folder method write
 //GET: api/users
 userRouter.get("/", getusers);
+userRouter.get("/:id", getuser);
 
 3. then controllter-> userController handle functionatiality. Here sometimes needs models->userModel (mongoose).
 

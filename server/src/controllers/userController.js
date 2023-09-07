@@ -1,13 +1,15 @@
 const createError = require('http-errors');
 const User = require("../models/userModel");
 const { successResponse } = require('./responseController');
+const  mongoose = require('mongoose');
 
+// get all user controller 
 const getusers = async (req, res, next) => {
     try {
         //setup search and pagination query
         const search = req.query.search || "";
         const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 1;
+        const limit = Number(req.query.limit) || 5;
 
         //search regular expression
         const searchRegExp = new RegExp('.*' + search + '.*', 'i');
@@ -36,6 +38,7 @@ const getusers = async (req, res, next) => {
         //if no user found show an error message
         if (!users) throw createError(404, 'No user found');
 
+        //go to responsecontroller. here we create success and error response for all functionality an here we send the values.
         return successResponse(res, {
             statusCode: 200,
             message: 'users were returned successfully',
@@ -54,4 +57,39 @@ const getusers = async (req, res, next) => {
     }
 };
 
-module.exports = { getusers };
+
+// get user by id controller 
+const getuser = async (req, res, next) => {
+    try {
+        // find the route id
+        const id = req.params.id;
+
+        //for skip to show the user password
+        const options = { password: 0 };
+
+        // find by id in User module
+        const user = await User.findById(id, options);
+
+        //if no user found send a error
+        if (!user) {
+            throw createError(404, 'user does not exist with this id');
+        }
+
+        //go to responsecontroller. here we create success and error response for all functionality an here we send the values.
+        return successResponse(res, {
+            statusCode: 200,
+            message: 'user were returned successfully',
+            payload: {
+                user,
+            }
+        })
+    } catch (error) {
+        if (error instanceof mongoose.Error) {
+            next(createError(404, 'Invalid user ID'));
+            return;
+        }
+        next(error);
+    }
+};
+
+module.exports = { getusers, getuser };
